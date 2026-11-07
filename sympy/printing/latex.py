@@ -1155,14 +1155,15 @@ class LatexPrinter(Printer):
 
     def _print_Not(self, e):
         from sympy.logic.boolalg import (Equivalent, Implies)
-        if isinstance(e.args[0], Equivalent):
-            return self._print_Equivalent(e.args[0], r"\not\Leftrightarrow")
-        if isinstance(e.args[0], Implies):
-            return self._print_Implies(e.args[0], r"\not\Rightarrow")
-        if (e.args[0].is_Boolean):
-            return r"\neg \left(%s\right)" % self._print(e.args[0])
+        arg = e.args[0]
+        if isinstance(arg, Equivalent):
+            return self._print_Equivalent(arg, r"\not\Leftrightarrow")
+        if isinstance(arg, Implies):
+            return self._print_Implies(arg, r"\not\Rightarrow")
+        if (arg.is_Boolean or arg.is_Relational or arg.func.__name__ == 'Contains') and not getattr(arg, 'is_Not', False):
+            return r"\neg \left(%s\right)" % self._print(arg)
         else:
-            return r"\neg %s" % self._print(e.args[0])
+            return r"\neg %s" % self._print(arg)
 
     def _print_LogOp(self, args, char):
         arg = args[0]

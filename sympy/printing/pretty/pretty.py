@@ -238,7 +238,7 @@ class PrettyPrinter(Printer):
             if isinstance(arg, Implies):
                 return self._print_Implies(arg, altchar=pretty_atom('NotArrow'))
 
-            if arg.is_Boolean and not arg.is_Not:
+            if (arg.is_Boolean or arg.is_Relational or arg.func.__name__ == 'Contains') and not arg.is_Not:
                 pform = prettyForm(*pform.parens())
 
             return prettyForm(*pform.left(pretty_atom('Not')))
